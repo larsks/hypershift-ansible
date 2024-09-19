@@ -1,0 +1,38 @@
+all:
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    bmcUser: root
+    bmcAddress: >-
+      {% set hostparts=inventory_hostname.split('.', 1) -%}
+      {{ "%s-obm.%s" % (hostparts[0], hostparts[1]) }}
+  children:
+    hypershift1:
+      vars:
+        ansible_user: core
+        api_vip: 10.30.8.80
+        ingress_vip: 10.30.8.81
+      children:
+        controllers:
+          hosts:
+            wrk-72.nerc-ocp-prod.rc.fas.harvard.edu:
+              ansible_host: 10.30.8.82
+            wrk-76.nerc-ocp-prod.rc.fas.harvard.edu:
+              ansible_host: 10.30.8.86
+            wrk-78.nerc-ocp-prod.rc.fas.harvard.edu:
+              ansible_host: 10.30.8.88
+        workers:
+          hosts:
+            wrk-77.nerc-ocp-prod.rc.fas.harvard.edu:
+              ansible_host: 10.30.8.87
+            wrk-74.nerc-ocp-prod.rc.fas.harvard.edu:
+              ansible_host: 10.30.8.84
+    free_nodes:
+      vars:
+        ansible_user: core
+      hosts:
+        wrk-73.nerc-ocp-prod.rc.fas.harvard.edu:
+        wrk-79.nerc-ocp-prod.rc.fas.harvard.edu:
+        wrk-83.nerc-ocp-prod.rc.fas.harvard.edu:
+        wrk-84.nerc-ocp-prod.rc.fas.harvard.edu:
+        wrk-75.nerc-ocp-prod.rc.fas.harvard.edu:
+          ansible_host: 10.30.8.85
